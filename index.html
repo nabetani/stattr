@@ -25,12 +25,12 @@
     });
   };
 
-  const draw = (ctx, w, h, gm) => {
+  const draw = (ctx, w, h, col, len, gm) => {
     let px = 1;
     let py = 1;
     let xrange = [0, 0];
     let yrange = [0, 0];
-    for (let ix = 0; ix < 10000; ++ix) {
+    for (let ix = 0; ix < 100000; ++ix) {
       [px, py] = gm(px, py);
       xrange = [Math.min(px, xrange[0]), Math.max(px, xrange[1])];
       yrange = [Math.min(py, yrange[0]), Math.max(py, yrange[1])];
@@ -39,14 +39,14 @@
     if (!Number.isFinite(px) || !Number.isFinite(py)) {
       return;
     }
-    ctx.fillStyle = "rgba(0,0,0,0.1)";
+    ctx.fillStyle = col;
     const z = Math.min(
       w / (xrange[1] - xrange[0]),
       h / (yrange[1] - yrange[0])) * 0.9;
     const cx = (xrange[0] + xrange[1]) / 2;
     const cy = (yrange[0] + yrange[1]) / 2;
 
-    for (let ix = 0; ix < 1000000; ++ix) {
+    for (let ix = 0; ix < len; ++ix) {
       [px, py] = gm(px, py);
       let x = (px - cx) * z + w / 2;
       let y = (py - cy) * z + h / 2;
@@ -68,7 +68,7 @@
     div.appendChild(canvas);
     div.appendChild(para);
     const ctx = canvas.getContext('2d');
-    draw(ctx, w, h, make_gumomira(a, s, m));
+    draw(ctx, w, h, "rgb(0,0,0)", 100000, make_gumomira(a, s, m));
   };
   const randval = (a, b) => {
     return Math.random() * (b - a) + a;
@@ -89,10 +89,26 @@
       canvas.setAttribute("height", h);
       body.appendChild(canvas);
       const ctx = canvas.getContext('2d');
-      draw(ctx, w, h, make_gumomira(a, s, m));
+      const rep = 1000000;
+      draw(ctx, w, h, "rgba(0,0,0,0.1)", rep, make_gumomira(a, s, m));
     };
     let w = 1024;
     let h = 1024;
+    run2(w, h, 0.00001, 0.0124, 0.28004);
+
+
+    run2(w, h, 0.10274, 0.02274, -0.2649);
+    run2(w, h, 0.88578, 0.00001, 0.22321);
+    run2(w, h, 0.78886, 0.19168, 0.28348);
+    run2(w, h, 0.11502, 3.89448, 0.01259);
+    // run2(w, h, 0.00889, 5.31066, 0.42243);
+    run2(w, h, 0.07596, 0.0064, -0.5355);
+    run2(w, h, 0.75831, 0.00002, -0.5833);
+    // run2(w, h, 0.00008, 0.01761, 0.31083);
+    run2(w, h, 1.32908, 0.00021, 0.13329);
+    run2(w, h, 0.32107, 3.2375, 0.24161);
+    // run2(w, h, 0.0001, 0.00918, -0.3481);
+
     run2(w, h, 0.02728, 0.01, -0.5663);
     run2(w, h, 0.98157, 0.06812, 0.39339);
     run2(w, h, 0.78796, 0.12573, 0.78069);
@@ -108,12 +124,13 @@
     // run2(w, h, 0.00006, 0.00001, -0.9999);
     run2(w, h, 0.02093, 8.97829, 0.00489);
     // run2(w, h, 0.00005, 0.25487, 0.46823);
-    run2(w, h, 0.00004, 0.12394, 0.66467);
+    // run2(w, h, 0.00004, 0.12394, 0.66467);
     run2(w, h, 0.00034, 0.75032, -0.4749);
     run2(w, h, 1.37366, 0.00008, 0.05132);
     run2(w, h, 0.00001, 0.01136, -0.0541);
     run2(w, h, 1.5931, 0.00003, 0.02918);
   };
-  //find();
-  collected();
+  (true
+    && false
+  ) ? find() : collected();
 </script>
