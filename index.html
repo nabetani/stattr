@@ -1,0 +1,136 @@
+<style>
+  canvas {
+    width: 256px;
+    height: 256px;
+  }
+
+  div {
+    display: inline-block;
+    border: solid red 10px;
+  }
+</style>
+
+<body></body>
+<script>
+  "use strict";
+
+  const make_gumomira = (a, s, m) => {
+    return ((x, y) => {
+      const q = (e) => {
+        return 2 * (1 - m) * e * e / (1 + e * e);
+      };
+      const nx = y + a * y * (1 - s * y * y) + m * x + q(x);
+      const ny = -x + m * nx + q(nx);
+      return [nx, ny];
+    });
+  };
+
+  const draw = (ctx, w, h, col, len, gm) => {
+    let px = 1;
+    let py = 1;
+    let xrange = [0, 0];
+    let yrange = [0, 0];
+    for (let ix = 0; ix < 100000; ++ix) {
+      [px, py] = gm(px, py);
+      xrange = [Math.min(px, xrange[0]), Math.max(px, xrange[1])];
+      yrange = [Math.min(py, yrange[0]), Math.max(py, yrange[1])];
+    }
+    console.log(xrange, yrange);
+    if (!Number.isFinite(px) || !Number.isFinite(py)) {
+      return;
+    }
+    ctx.fillStyle = col;
+    const z = Math.min(
+      w / (xrange[1] - xrange[0]),
+      h / (yrange[1] - yrange[0])) * 0.9;
+    const cx = (xrange[0] + xrange[1]) / 2;
+    const cy = (yrange[0] + yrange[1]) / 2;
+
+    for (let ix = 0; ix < len; ++ix) {
+      [px, py] = gm(px, py);
+      let x = (px - cx) * z + w / 2;
+      let y = (py - cy) * z + h / 2;
+      ctx.fillRect(x, y, 1, 1);
+    }
+  };
+  const xround = (x) => {
+    return parseFloat(("" + x).substr(0, 7));
+  };
+  const run = (w, h, a, s, m) => {
+    const div = document.createElement("div");
+    const para = document.createElement("p");
+    para.append(`run2(w,h,${a},${s},${m});`);
+    const canvas = document.createElement("canvas");
+    const body = document.getElementsByTagName("body")[0];
+    canvas.setAttribute("width", w);
+    canvas.setAttribute("height", h);
+    body.appendChild(div);
+    div.appendChild(canvas);
+    div.appendChild(para);
+    const ctx = canvas.getContext('2d');
+    draw(ctx, w, h, "rgb(0,0,0)", 100000, make_gumomira(a, s, m));
+  };
+  const randval = (a, b) => {
+    return Math.random() * (b - a) + a;
+  };
+  const find = () => {
+    for (let i = 0; i < 25; ++i) {
+      let a = Math.pow(10, randval(-5, 1));
+      let s = Math.pow(10, randval(-5, 1));
+      let m = randval(-3, 3) * randval(0, 1);
+      run(512, 512, xround(a), xround(s), xround(m));
+    }
+  }
+  const collected = () => {
+    const run2 = (w, h, a, s, m) => {
+      const canvas = document.createElement("canvas");
+      const body = document.getElementsByTagName("body")[0];
+      canvas.setAttribute("width", w);
+      canvas.setAttribute("height", h);
+      body.appendChild(canvas);
+      const ctx = canvas.getContext('2d');
+      const rep = 1000000;
+      draw(ctx, w, h, "rgba(0,0,0,0.1)", rep, make_gumomira(a, s, m));
+    };
+    let w = 1024;
+    let h = 1024;
+    run2(w, h, 0.00001, 0.0124, 0.28004);
+
+
+    run2(w, h, 0.10274, 0.02274, -0.2649);
+    run2(w, h, 0.88578, 0.00001, 0.22321);
+    run2(w, h, 0.78886, 0.19168, 0.28348);
+    run2(w, h, 0.11502, 3.89448, 0.01259);
+    // run2(w, h, 0.00889, 5.31066, 0.42243);
+    run2(w, h, 0.07596, 0.0064, -0.5355);
+    run2(w, h, 0.75831, 0.00002, -0.5833);
+    // run2(w, h, 0.00008, 0.01761, 0.31083);
+    run2(w, h, 1.32908, 0.00021, 0.13329);
+    run2(w, h, 0.32107, 3.2375, 0.24161);
+    // run2(w, h, 0.0001, 0.00918, -0.3481);
+
+    run2(w, h, 0.02728, 0.01, -0.5663);
+    run2(w, h, 0.98157, 0.06812, 0.39339);
+    run2(w, h, 0.78796, 0.12573, 0.78069);
+    run2(w, h, 0.00453, 0.00132, -0.0032);
+    // run2(w, h, 0.00215, 0.09903, -0.4883);
+    run2(w, h, 0.01249, 0.01305, -0.7444);
+    run2(w, h, 0.0213, 0.00551, -0.1501);
+    run2(w, h, 0.00405, 0.00816, -0.3767);
+    run2(w, h, 0.11565, 0.02223, -0.8842);
+    run2(w, h, 0.62767, 0.04724, -0.4438);
+    run2(w, h, 0.03311, 0.01335, 0.01096);
+    run2(w, h, 0.01464, 0.10627, -0.6436);
+    // run2(w, h, 0.00006, 0.00001, -0.9999);
+    run2(w, h, 0.02093, 8.97829, 0.00489);
+    // run2(w, h, 0.00005, 0.25487, 0.46823);
+    // run2(w, h, 0.00004, 0.12394, 0.66467);
+    run2(w, h, 0.00034, 0.75032, -0.4749);
+    run2(w, h, 1.37366, 0.00008, 0.05132);
+    run2(w, h, 0.00001, 0.01136, -0.0541);
+    run2(w, h, 1.5931, 0.00003, 0.02918);
+  };
+  (true
+    && false
+  ) ? find() : collected();
+</script>
