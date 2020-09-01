@@ -1,0 +1,64 @@
+<style>
+  canvas {
+    width: 512px;
+    height: 512px;
+    border: solid red 10px;
+  }
+</style>
+
+<body></body>
+<script>
+  "use strict";
+
+  const gumomira = (x, y) => {
+    const a = 0.009;
+    const m = -0.801;
+    const s = 0.051;
+    const q = (e) => {
+      return 2 * (1 - m) * e * e / (1 + e * e);
+    };
+    const nx = y + a * y * (1 - s * y * y) + m * x + q(x);
+    const ny = -x + m * nx + q(nx);
+    return [nx, ny];
+  };
+
+  const draw = (ctx, w, h) => {
+    let px = 1;
+    let py = 1;
+    let xrange = [0, 0];
+    let yrange = [0, 0];
+    for (let ix = 0; ix < 1000; ++ix) {
+      [px, py] = gumomira(px, py);
+      xrange = [Math.min(px, xrange[0]), Math.max(px, xrange[1])];
+      yrange = [Math.min(py, yrange[0]), Math.max(py, yrange[1])];
+    }
+    console.log(xrange, yrange);
+    ctx.fillStyle = "rgba(0,0,0,0.3)";
+    const z = Math.min(
+      w / (xrange[1] - xrange[0]),
+      h / (yrange[1] - yrange[0])) * 0.9;
+    const cx = (xrange[0] + xrange[1]) / 2;
+    const cy = (yrange[0] + yrange[1]) / 2;
+
+    for (let ix = 0; ix < 1000000; ++ix) {
+      [px, py] = gumomira(px, py);
+      let x = (px - cx) * z + w / 2;
+      let y = (py - cy) * z + h / 2;
+      ctx.fillRect(x, y, 1, 1);
+    }
+  };
+  const run = (w, h) => {
+    const canvas = document.createElement("canvas");
+    const body = document.getElementsByTagName("body")[0];
+    canvas.setAttribute("width", w);
+    canvas.setAttribute("height", h);
+    body.appendChild(canvas);
+    const ctx = canvas.getContext('2d');
+    draw(ctx, w, h)
+  };
+  run(2048, 2048);
+  run(2048, 2048);
+  run(2048, 2048);
+  run(2048, 2048);
+  run(2048, 2048);
+</script>
